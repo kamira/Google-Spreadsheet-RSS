@@ -23,12 +23,12 @@ function parseRSS(Name, feed, puD, count) {
     var txt;
   	var lastdate = puD;
     if ((lastdate!=null) && (lastdate!='')){
-      try{
-        var result = UrlFetchApp.fetch(feed, { muteHttpExceptions: true });
+		try{
+        	var result = UrlFetchApp.fetch(feed, { muteHttpExceptions: true });
         
- Logger.log("code: " + result.getResponseCode());
- Logger.log("text: " + result.getContentText());
-        txt = result.getContentText();
+ 			Logger.log("code: " + result.getResponseCode());
+ 			Logger.log("text: " + result.getContentText());
+        	txt = result.getContentText();
       }catch(e){
         
         var currentdate = new Date(); 
@@ -74,13 +74,13 @@ function parseRSS(Name, feed, puD, count) {
       		title = LanguageApp.translate(item.getElement("title").getText(),"zh-CN","zh-TW");
       		//link
       		link  = item.getElement("link").getText();
-      		//desc  = item.getElement("description").getText();
+      		desc  = item.getElement("description").getText().replace('<![CDATA['.'').replace(']]>'.'');
       		//magnet
       		encl  = item.getElement("enclosure").getAttribute('url').getValue();
             tag   = LanguageApp.translate(item.getElement("category").getText(),"zh-CN","zh-TW").replace("ＲＡＷ","RAW");
 
       		//item add to database
-      		sheetdatabase.appendRow([Name, title, link, encl, date, tag]);
+      		sheetdatabase.appendRow([Name, title, desc, link, encl, date, tag]);
         }
         var currentdate = new Date(); 
         var eventtime = currentdate.getFullYear() + "/"
@@ -103,7 +103,7 @@ function RSSdatabase(count){
   
   var columnToSortBy = 5;
   var num = (sheet.getLastRow()).toFixed(0).toString();
-  var range = sheet.getRange("A2:G"+num);
+  var range = sheet.getRange("A2:H"+num);
   range.sort( { column : columnToSortBy, ascending: false } );
 }
 
